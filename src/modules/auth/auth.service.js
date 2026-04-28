@@ -20,6 +20,13 @@ const register = async (body) => {
       name: user.name,
       phone: user.phone,
       role: user.role,
+      governorate: user.governorate,
+      age: user.age,                          // player only
+      field_name: user.field_name,            // owner only
+      matches_played: user.matches_played,
+      splits_joined: user.splits_joined,
+      match_notifications: user.match_notifications,
+      wallet_balance: user.wallet_balance,
     },
   };
 };
