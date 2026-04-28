@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['player', 'owner'], required: true },
     avatar: { type: String, default: null },
+    governorate: { type: String },
 
     // player fields
     age: { type: Number },

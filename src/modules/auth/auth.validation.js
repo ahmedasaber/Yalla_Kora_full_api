@@ -17,6 +17,9 @@ const registerSchema = Joi.object({
     'any.required': 'كلمة المرور مطلوبة',
   }),
   role: Joi.string().valid('player', 'owner').required(),
+  governorate: Joi.string().required().messages({
+    'any.required': 'المحافظة مطلوبة',
+  }),
   age: Joi.when('role', {
     is: 'player',
     then: Joi.number().min(10).max(80).required(),

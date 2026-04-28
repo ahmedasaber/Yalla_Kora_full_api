@@ -7,7 +7,7 @@ const getProfile = async (userId) => {
 };
 
 const updateProfile = async (userId, body) => {
-  const allowedFields = ['name', 'age', 'avatar', 'match_notifications'];
+  const allowedFields = ['name', 'age', 'avatar', 'match_notifications', 'governorate'];
   const updates = {};
   allowedFields.forEach((f) => {
     if (body[f] !== undefined) updates[f] = body[f];
