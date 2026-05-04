@@ -13,6 +13,7 @@ const { upload } = require('../../config/cloudinary');
 router.get('/', controller.getAllFields);
 router.get('/:field_id', controller.getFieldDetails);
 router.get('/:field_id/schedule', controller.getSchedule);
+router.get('/:field_id/availability', controller.getAvailability);
 
 // Protected routes
 router.use(protect);

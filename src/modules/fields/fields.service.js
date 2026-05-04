@@ -2,6 +2,30 @@ const Field = require('../../models/Field');
 const Schedule = require('../../models/Schedule');
 const { generateTimeSlots } = require('../../utils/helpers');
 
+const ARABIC_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+const formatField = (field) => ({
+  id: field._id,
+  ownerId: field.owner._id || field.owner,
+  name: field.name,
+  type: {
+    id: field.type,
+    label: { '5x5': 'خماسي', '7x7': 'سباعي', '11x11': 'حادي عشر' }[field.type],
+  },
+  pricePerHour: field.price_per_hour,
+  rating: field.rating_avg,
+  reviewsCount: field.rating_count,
+  location: field.location,
+  images: field.images,
+  features: field.features,
+  workingHours: {
+    is24Hours: field.is24Hours,
+    openTime: field.open_time,
+    closeTime: field.close_time,
+  },
+  status: field.status,
+});
+
 const createField = async (ownerId, body) => {
   const field = await Field.create({ owner: ownerId, ...body });
   return field;
@@ -28,10 +52,10 @@ const updateField = async (fieldId, ownerId, body) => {
 };
 
 const getAllFields = async (query) => {
-  const filter = { is_active: true };
+  const filter = { status: 'active' }
 
   if (query.location) {
-    filter.location = { $regex: query.location, $options: 'i' };
+    filter['location.name'] = { $regex: query.location, $options: 'i' };
   }
   if (query.type) {
     filter.type = query.type;
@@ -47,15 +71,16 @@ const getAllFields = async (query) => {
 
   const fields = await Field.find(filter)
     .populate('owner', 'name phone')
-    .sort('-createdAt');
+    .sort('-createdAt')
+    .lean();
 
-  return fields;
+  return fields.map(formatField);;
 };
 
 const getFieldDetails = async (fieldId) => {
-  const field = await Field.findById(fieldId).populate('owner', 'name phone');
+  const field = await Field.findById(fieldId).populate('owner', 'name phone').lean();
   if (!field) throw { statusCode: 404, message: 'الملعب غير موجود' };
-  return field;
+  return formatField(field);
 };
 
 // Auto-generate schedule for a date if it doesn't exist yet
@@ -88,6 +113,72 @@ const setSchedule = async (fieldId, ownerId, date, slots) => {
   return schedule;
 };
 
+const getMonthAvailability = async (fieldId, month) => {
+  const field = await Field.findById(fieldId);
+  if (!field) throw { statusCode: 404, message: 'الملعب غير موجود' };
+
+  // Generate all dates in the month
+  const [year, monthNum] = month.split('-').map(Number);
+  const daysInMonth = new Date(year, monthNum, 0).getDate();
+  const dates = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    dates.push(`${month}-${String(d).padStart(2, '0')}`);
+  }
+
+  // Fetch all schedules for this field in this month at once
+  const schedules = await Schedule.find({
+    field: fieldId,
+    date: { $in: dates },
+  });
+  const scheduleMap = Object.fromEntries(schedules.map((s) => [s.date, s]));
+
+  const days = dates.map((date) => {
+    const jsDate = new Date(date);
+    const dayName = ARABIC_DAYS[jsDate.getDay()];
+
+    let slots;
+    if (scheduleMap[date]) {
+      // Use existing schedule
+      slots = scheduleMap[date].slots.map((slot, idx) => {
+        const [h] = slot.time.split(':').map(Number);
+        const endHour = String(h + 1).padStart(2, '0');
+        return {
+          id: `${date}-s${idx + 1}`,
+          startTime: slot.time,
+          endTime: `${endHour}:00`,
+          isAvailable: slot.status === 'available',
+          price: field.price_per_hour,
+        };
+      });
+    } else {
+      // Auto-generate from open/close times
+      const rawSlots = generateTimeSlots(field.open_time, field.close_time);
+      slots = rawSlots.map((slot, idx) => {
+        const [h] = slot.time.split(':').map(Number);
+        const endHour = String(h + 1).padStart(2, '0');
+        return {
+          id: `${date}-s${idx + 1}`,
+          startTime: slot.time,
+          endTime: `${endHour}:00`,
+          isAvailable: true,
+          price: field.price_per_hour,
+        };
+      });
+    }
+
+    return { dayDate: date, dayName, slots };
+  });
+
+  return {
+    fieldId,
+    month,
+    timezone: 'Africa/Cairo',
+    slotDuration: 60,
+    currency: 'EGP',
+    days,
+  };
+};
+
 module.exports = {
   createField,
   uploadImages,
@@ -97,4 +188,5 @@ module.exports = {
   getSchedule,
   setSchedule,
   ensureSchedule,
+  getMonthAvailability,
 };

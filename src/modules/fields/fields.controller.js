@@ -83,6 +83,17 @@ const setSchedule = async (req, res, next) => {
   }
 };
 
+const getAvailability = async (req, res, next) => {
+  try {
+    const { month } = req.query; // "2026-02"
+    if (!month) return next({ statusCode: 400, message: 'الشهر مطلوب (مثال: 2026-02)' });
+    const result = await fieldsService.getMonthAvailability(req.params.field_id, month);
+    return success(res, result);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createField,
   uploadImages,
@@ -91,4 +102,5 @@ module.exports = {
   getFieldDetails,
   getSchedule,
   setSchedule,
+  getAvailability,
 };

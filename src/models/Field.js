@@ -1,19 +1,33 @@
 const mongoose = require('mongoose');
 
+const featureSchema = new mongoose.Schema(
+  { id: { type: String, required: true }, name: { type: String, required: true } },
+  { _id: false }
+);
+
+const locationSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },       // "مدينة نصر"
+    address: { type: String, required: true },    // "القاهرة - النزهة"
+    lat: { type: Number },
+    lng: { type: Number },
+  },
+  { _id: false }
+);
+
 const fieldSchema = new mongoose.Schema(
   {
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String, required: true, trim: true },
-    location: { type: String, required: true },
+    location: { type: locationSchema, required: true },
     price_per_hour: { type: Number, required: true },
     type: { type: String, enum: ['5x5', '7x7', '11x11'], required: true },
-    open_time: { type: String, required: true },   // "09:00"
-    close_time: { type: String, required: true },  // "23:00"
-    features: [{ type: String }],
+    open_time: { type: String, required: true },
+    close_time: { type: String, required: true },
+    is24Hours: { type: Boolean, default: false },
+    features: [featureSchema],
     images: [{ type: String }],
-    is_active: { type: Boolean, default: true },
-
-    // computed avg rating
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     rating_avg: { type: Number, default: 0 },
     rating_count: { type: Number, default: 0 },
   },

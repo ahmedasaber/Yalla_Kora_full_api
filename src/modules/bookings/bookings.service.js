@@ -12,7 +12,7 @@ const createBooking = async (playerId, body) => {
 
   // 1. Get field
   const field = await Field.findById(field_id);
-  if (!field || !field.is_active) {
+  if (!field || field.status !== 'active') {
     throw { statusCode: 404, message: 'الملعب غير موجود' };
   }
 
