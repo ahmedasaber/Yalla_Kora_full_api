@@ -35,6 +35,6 @@ const fieldSchema = new mongoose.Schema(
 );
 
 // text index for search
-fieldSchema.index({ name: 'text', location: 'text' });
+fieldSchema.index({ name: 'text', 'location.name': 'text' });
 
 module.exports = mongoose.model('Field', fieldSchema);

@@ -74,7 +74,7 @@ const getAllFields = async (query) => {
     .sort('-createdAt')
     .lean();
 
-  return fields.map(formatField);;
+  return fields.map(formatField);
 };
 
 const getFieldDetails = async (fieldId) => {
