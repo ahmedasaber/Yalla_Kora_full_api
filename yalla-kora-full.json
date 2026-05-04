@@ -1,241 +1,465 @@
 {
-    "info": {
-      "name": "Yalla Kora API FULL",
-      "_postman_id": "full-collection-yalla-kora",
-      "description": "Full API Collection",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "variable": [
-      { "key": "base_url", "value": "http://localhost:3000/api" },
-      { "key": "token", "value": "" },
-      { "key": "field_id", "value": "" },
-      { "key": "booking_id", "value": "" },
-      { "key": "match_id", "value": "" }
-    ],
-    "auth": {
-      "type": "bearer",
-      "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
-    },
-    "item": [
-      {
-        "name": "🔐 Auth",
-        "item": [
-          {
-            "name": "Register Player",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"name\":\"Ahmed\",\n\"phone\":\"01012345678\",\n\"password\":\"123456\",\n\"role\":\"player\",\n\"age\":22\n}"
-              },
-              "url": "{{base_url}}/auth/register"
-            }
-          },
-          {
-            "name": "Register Owner",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"name\":\"Ahmed\",\n\"phone\":\"01012345678\",\n\"password\":\"123456\",\n\"role\":\"owner\",\n\"field_name\":\"ملعب الهدف\"\n}"
-              },
-              "url": "{{base_url}}/auth/register"
-            }
-          },
-          {
-            "name": "Login",
-            "event": [
-              {
-                "listen": "test",
-                "script": {
-                  "exec": [
-                    "const res = pm.response.json();",
-                    "pm.collectionVariables.set('token', res.token);"
-                  ]
-                }
+  "info": {
+    "name": "Yalla Kora API FULL",
+    "_postman_id": "full-collection-yalla-kora",
+    "description": "Full API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "https://yallakora.up.railway.app/api" },
+    { "key": "token", "value": "" },
+    { "key": "field_id", "value": "1" },
+    { "key": "booking_id", "value": "1" },
+    { "key": "match_id", "value": "1" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register Player",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmed\",\n  \"phone\": \"01012345678\",\n  \"password\": \"123456\",\n  \"role\": \"player\",\n  \"age\": 22,\n  \"governorate\": \"القاهرة\"\n}"
+            },
+            "url": "{{base_url}}/auth/register"
+          }
+        },
+        {
+          "name": "Register Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmed\",\n  \"phone\": \"01098765432\",\n  \"password\": \"123456\",\n  \"role\": \"owner\",\n  \"field_name\": \"ملعب الهدف\",\n  \"governorate\": \"القاهرة\"\n}"
+            },
+            "url": "{{base_url}}/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "}"
+                ]
               }
-            ],
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"phone\":\"01012345678\",\n\"password\":\"123456\"\n}"
-              },
-              "url": "{{base_url}}/auth/login"
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"01012345678\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{base_url}}/auth/login"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "👤 User",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/user/profile"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmed Updated\",\n  \"age\": 25,\n  \"governorate\": \"الإسكندرية\",\n  \"match_notifications\": true\n}"
+            },
+            "url": "{{base_url}}/user/profile"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🏟️ Fields",
+      "item": [
+        {
+          "name": "Get All Fields",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fields",
+              "host": ["{{base_url}}"],
+              "path": ["fields"],
+              "query": [
+                { "key": "location", "value": "مدينة نصر", "disabled": true },
+                { "key": "type", "value": "5x5", "disabled": true },
+                { "key": "min_price", "value": "200", "disabled": true },
+                { "key": "max_price", "value": "500", "disabled": true },
+                { "key": "search", "value": "ملعب", "disabled": true }
+              ]
             }
           }
-        ]
-      },
-  
-      {
-        "name": "👤 User",
-        "item": [
-          {
-            "name": "Get Profile",
-            "request": { "method": "GET", "url": "{{base_url}}/user/profile" }
-          },
-          {
-            "name": "Update Profile",
-            "request": {
-              "method": "PUT",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": { "mode": "raw", "raw": "{ \"name\": \"Ahmed Updated\" }" },
-              "url": "{{base_url}}/user/profile"
+        },
+        {
+          "name": "Get Field By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/fields/{{field_id}}"
+          }
+        },
+        {
+          "name": "Create Field",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.field && res.data.field._id) {",
+                  "  pm.collectionVariables.set('field_id', res.data.field._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ملعب الكابيتانو\",\n  \"location\": {\n    \"name\": \"مدينة نصر\",\n    \"address\": \"القاهرة - النزهة\",\n    \"lat\": 30.0626,\n    \"lng\": 31.3219\n  },\n  \"price_per_hour\": 300,\n  \"type\": \"5x5\",\n  \"open_time\": \"09:00\",\n  \"close_time\": \"23:00\",\n  \"is24Hours\": false,\n  \"features\": [\n    { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n    { \"id\": \"2\", \"name\": \"كافيتريا\" },\n    { \"id\": \"3\", \"name\": \"غرف تبديل\" }\n  ]\n}"
+            },
+            "url": "{{base_url}}/fields"
+          }
+        },
+        {
+          "name": "Update Field",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price_per_hour\": 400,\n  \"status\": \"active\"\n}"
+            },
+            "url": "{{base_url}}/fields/{{field_id}}"
+          }
+        },
+        {
+          "name": "Upload Field Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": "{{base_url}}/fields/{{field_id}}/images"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📅 Schedule & Availability",
+      "item": [
+        {
+          "name": "Get Schedule",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fields/{{field_id}}/schedule?date=2026-02-03",
+              "host": ["{{base_url}}"],
+              "path": ["fields", "{{field_id}}", "schedule"],
+              "query": [{ "key": "date", "value": "2026-02-03" }]
             }
           }
-        ]
-      },
-  
-      {
-        "name": "🏟️ Fields",
-        "item": [
-          { "name": "Get Fields", "request": { "method": "GET", "url": "{{base_url}}/fields" } },
-          { "name": "Get Field By ID", "request": { "method": "GET", "url": "{{base_url}}/fields/{{field_id}}" } },
-          {
-            "name": "Create Field",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"name\":\"ملعب الكابيتانو\",\n\"location\":\"القاهرة\",\n\"price_per_hour\":300,\n\"type\":\"5x5\",\n\"open_time\":\"09:00\",\n\"close_time\":\"23:00\"\n}"
-              },
-              "url": "{{base_url}}/fields"
-            }
-          },
-          {
-            "name": "Update Field",
-            "request": {
-              "method": "PUT",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": { "mode": "raw", "raw": "{ \"price_per_hour\": 400 }" },
-              "url": "{{base_url}}/fields/{{field_id}}"
+        },
+        {
+          "name": "Set Schedule (Owner)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-02-03\",\n  \"slots\": [\n    { \"time\": \"09:00\", \"status\": \"available\" },\n    { \"time\": \"10:00\", \"status\": \"available\" },\n    { \"time\": \"17:00\", \"status\": \"booked\" },\n    { \"time\": \"18:00\", \"status\": \"available\" }\n  ]\n}"
+            },
+            "url": "{{base_url}}/fields/{{field_id}}/schedule"
+          }
+        },
+        {
+          "name": "Get Month Availability",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fields/{{field_id}}/availability?month=2026-02",
+              "host": ["{{base_url}}"],
+              "path": ["fields", "{{field_id}}", "availability"],
+              "query": [{ "key": "month", "value": "2026-02" }]
             }
           }
-        ]
-      },
-  
-      {
-        "name": "📅 Availability",
-        "item": [
-          {
-            "name": "Get Schedule",
-            "request": {
-              "method": "GET",
-              "url": "{{base_url}}/fields/{{field_id}}/schedule?date=2026-02-03"
+        }
+      ]
+    },
+
+    {
+      "name": "📖 Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.booking && res.data.booking._id) {",
+                  "  pm.collectionVariables.set('booking_id', res.data.booking._id);",
+                  "}"
+                ]
+              }
             }
-          },
-          {
-            "name": "Set Schedule",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"date\":\"2026-02-03\",\n\"slots\":[{\"time\":\"17:00\",\"status\":\"available\"}]\n}"
-              },
-              "url": "{{base_url}}/fields/{{field_id}}/schedule"
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-12-03\",\n  \"time_from\": \"17:00\",\n  \"time_to\": \"18:00\",\n  \"players_count\": 10,\n  \"type\": \"5x5\",\n  \"payment_method\": \"cash\"\n}"
+            },
+            "url": "{{base_url}}/bookings"
+          }
+        },
+        {
+          "name": "Get Upcoming Bookings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/bookings?type=upcoming",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "type", "value": "upcoming" }]
             }
           }
-        ]
-      },
-  
-      {
-        "name": "📖 Bookings",
-        "item": [
-          {
-            "name": "Create Booking",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"field_id\":\"{{field_id}}\",\n\"date\":\"2025-12-03\",\n\"time_from\":\"17:00\",\n\"time_to\":\"18:00\",\n\"players_count\":10,\n\"type\":\"5x5\",\n\"payment_method\":\"cash\"\n}"
-              },
-              "url": "{{base_url}}/bookings"
-            }
-          },
-          { "name": "Get Upcoming", "request": { "method": "GET", "url": "{{base_url}}/bookings?type=upcoming" } },
-          { "name": "Get Past", "request": { "method": "GET", "url": "{{base_url}}/bookings?type=past" } },
-          { "name": "Booking Details", "request": { "method": "GET", "url": "{{base_url}}/bookings/{{booking_id}}" } },
-          { "name": "Cancel Booking", "request": { "method": "DELETE", "url": "{{base_url}}/bookings/{{booking_id}}" } }
-        ]
-      },
-  
-      {
-        "name": "💰 Wallet",
-        "item": [
-          { "name": "Get Balance", "request": { "method": "GET", "url": "{{base_url}}/wallet" } },
-          {
-            "name": "Charge Wallet",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": { "mode": "raw", "raw": "{ \"amount\": 100, \"method\": \"vodafone_cash\" }" },
-              "url": "{{base_url}}/wallet/charge"
+        },
+        {
+          "name": "Get Past Bookings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/bookings?type=past",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "type", "value": "past" }]
             }
           }
-        ]
-      },
-  
-      {
-        "name": "👥 Matches",
-        "item": [
-          { "name": "Get Matches", "request": { "method": "GET", "url": "{{base_url}}/matches" } },
-          { "name": "Match Details", "request": { "method": "GET", "url": "{{base_url}}/matches/{{match_id}}" } },
-          {
-            "name": "Create Match",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n\"field_id\":\"{{field_id}}\",\n\"date\":\"2025-12-03\",\n\"time\":\"21:00\",\n\"players_needed\":10,\n\"price_per_player\":30\n}"
-              },
-              "url": "{{base_url}}/matches"
-            }
-          },
-          { "name": "Join Match", "request": { "method": "POST", "url": "{{base_url}}/matches/{{match_id}}/join" } },
-          { "name": "Leave Match", "request": { "method": "POST", "url": "{{base_url}}/matches/{{match_id}}/leave" } }
-        ]
-      },
-  
-      {
-        "name": "⭐ Ratings",
-        "item": [
-          {
-            "name": "Rate Field",
-            "request": {
-              "method": "POST",
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": { "mode": "raw", "raw": "{ \"rating\": 5, \"comment\": \"ملعب ممتاز\" }" },
-              "url": "{{base_url}}/fields/{{field_id}}/rate"
+        },
+        {
+          "name": "Booking Details",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/bookings/{{booking_id}}"
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/bookings/{{booking_id}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "💰 Wallet",
+      "item": [
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/wallet"
+          }
+        },
+        {
+          "name": "Charge Wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"method\": \"vodafone_cash\"\n}"
+            },
+            "url": "{{base_url}}/wallet/charge"
+          }
+        },
+        {
+          "name": "Create Booking (Wallet Payment)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-12-04\",\n  \"time_from\": \"19:00\",\n  \"time_to\": \"20:00\",\n  \"players_count\": 10,\n  \"type\": \"5x5\",\n  \"payment_method\": \"wallet\"\n}"
+            },
+            "url": "{{base_url}}/bookings"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "👥 Matches",
+      "item": [
+        {
+          "name": "Get All Matches",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/matches",
+              "host": ["{{base_url}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "date", "value": "2026-12-03", "disabled": true },
+                { "key": "field_id", "value": "{{field_id}}", "disabled": true }
+              ]
             }
           }
-        ]
-      },
-  
-      {
-        "name": "📊 Owner Dashboard",
-        "item": [
-          {
-            "name": "Field Bookings",
-            "request": {
-              "method": "GET",
-              "url": "{{base_url}}/owner/fields/{{field_id}}/bookings"
+        },
+        {
+          "name": "Match Details",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/matches/{{match_id}}"
+          }
+        },
+        {
+          "name": "Create Match",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.match && res.data.match._id) {",
+                  "  pm.collectionVariables.set('match_id', res.data.match._id);",
+                  "}"
+                ]
+              }
             }
-          },
-          {
-            "name": "Daily Dashboard",
-            "request": {
-              "method": "GET",
-              "url": "{{base_url}}/owner/fields/{{field_id}}/dashboard?date=2026-02-03"
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-12-03\",\n  \"time\": \"21:00\",\n  \"players_needed\": 10,\n  \"price_per_player\": 30\n}"
+            },
+            "url": "{{base_url}}/matches"
+          }
+        },
+        {
+          "name": "Join Match",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/matches/{{match_id}}/join"
+          }
+        },
+        {
+          "name": "Leave Match",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/matches/{{match_id}}/leave"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "⭐ Ratings",
+      "item": [
+        {
+          "name": "Rate Field",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"ملعب ممتاز ونظيف\"\n}"
+            },
+            "url": "{{base_url}}/fields/{{field_id}}/rate"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📊 Owner Dashboard",
+      "item": [
+        {
+          "name": "Get Field Bookings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/owner/fields/{{field_id}}/bookings",
+              "host": ["{{base_url}}"],
+              "path": ["owner", "fields", "{{field_id}}", "bookings"],
+              "query": [
+                { "key": "date", "value": "2026-02-03", "disabled": true },
+                { "key": "status", "value": "confirmed", "disabled": true }
+              ]
             }
           }
-        ]
-      }
-    ]
-  }
+        },
+        {
+          "name": "Daily Dashboard",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/owner/fields/{{field_id}}/dashboard?date=2026-02-03",
+              "host": ["{{base_url}}"],
+              "path": ["owner", "fields", "{{field_id}}", "dashboard"],
+              "query": [{ "key": "date", "value": "2026-02-03" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🔧 Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        }
+      ]
+    }
+  ]
+}
