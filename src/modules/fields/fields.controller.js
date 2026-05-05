@@ -41,8 +41,12 @@ const updateField = async (req, res, next) => {
 
 const getAllFields = async (req, res, next) => {
   try {
-    const fields = await fieldsService.getAllFields(req.query);
-    return success(res, { count: fields.length, fields });
+    // const fields = await fieldsService.getAllFields(req.query);
+    // return success(res, { count: fields.length, fields });
+
+    // دلوقتي getAllFields بترجع { fields, pagination } مش array، فالـ controller لازم يتغير:
+    const result = await fieldsService.getAllFields(req.query);
+    return success(res, result);  
   } catch (err) {
     next(err);
   }

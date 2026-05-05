@@ -10,7 +10,7 @@ const formatField = (field) => ({
   name: field.name,
   type: {
     id: field.type,
-    label: { '5x5': 'خماسي', '7x7': 'سباعي', '11x11': 'حادي عشر' }[field.type],
+    label: { '5x5': 'خماسي', '7x7': 'سباعي', '11x11': 'حداشر' }[field.type],
   },
   pricePerHour: field.price_per_hour,
   rating: field.rating_avg,
@@ -54,6 +54,18 @@ const updateField = async (fieldId, ownerId, body) => {
 const getAllFields = async (query) => {
   const filter = { status: 'active' }
 
+  // Unified search (replaces separate location + search params)
+  if (query.q) {
+    filter.$or = [
+      { name: { $regex: query.q, $options: 'i' } },
+      { 'location.name': { $regex: query.q, $options: 'i' } },
+      { 'location.address': { $regex: query.q, $options: 'i' } },
+    ];
+  }else if (query.location) {
+    // fallback للـ backward compatibility
+    filter['location.name'] = { $regex: query.location, $options: 'i' };
+  }
+
   if (query.location) {
     filter['location.name'] = { $regex: query.location, $options: 'i' };
   }
@@ -65,16 +77,39 @@ const getAllFields = async (query) => {
     if (query.min_price) filter.price_per_hour.$gte = Number(query.min_price);
     if (query.max_price) filter.price_per_hour.$lte = Number(query.max_price);
   }
-  if (query.search) {
-    filter.$text = { $search: query.search };
-  }
 
-  const fields = await Field.find(filter)
-    .populate('owner', 'name phone')
-    .sort('-createdAt')
-    .lean();
+  // Sorting
+  const sortMap = {
+    price_asc:  { price_per_hour:  1 },
+    price_desc: { price_per_hour: -1 },
+    rating:     { rating_avg:     -1 },
+  };
+  const sortOption = sortMap[query.sort] || { createdAt: -1 };
 
-  return fields.map(formatField);
+  // Pagination
+  const page  = parseInt(query.page)  || 1;
+  const limit = parseInt(query.limit) || 10;
+  const skip  = (page - 1) * limit;
+
+  const [fields, total] = await Promise.all([
+    Field.find(filter)
+      .populate('owner', 'name phone')
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Field.countDocuments(filter),
+  ]);
+
+  return {
+    fields: fields.map(formatField),
+    pagination: {
+      total,
+      page,
+      limit,
+      pages: Math.ceil(total / limit),
+    },
+  };
 };
 
 const getFieldDetails = async (fieldId) => {

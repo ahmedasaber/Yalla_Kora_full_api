@@ -2,26 +2,28 @@
   "info": {
     "name": "Yalla Kora API FULL",
     "_postman_id": "full-collection-yalla-kora",
-    "description": "Full API Collection",
+    "description": "Full API Collection — synced with codebase v3 (with example responses)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "base_url", "value": "https://yallakora.up.railway.app/api" },
-    { "key": "token", "value": "" },
-    { "key": "field_id", "value": "1" },
-    { "key": "booking_id", "value": "1" },
-    { "key": "match_id", "value": "1" }
+    { "key": "base_url",   "value": "https://yallakora.up.railway.app/api" },
+    { "key": "token",      "value": "" },
+    { "key": "field_id",   "value": "" },
+    { "key": "booking_id", "value": "" },
+    { "key": "match_id",   "value": "" }
   ],
   "auth": {
     "type": "bearer",
     "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
   },
   "item": [
+
     {
       "name": "🔐 Auth",
       "item": [
+
         {
-          "name": "Register Player",
+          "name": "Register — Player",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -30,20 +32,50 @@
               "raw": "{\n  \"name\": \"Ahmed\",\n  \"phone\": \"01012345678\",\n  \"password\": \"123456\",\n  \"role\": \"player\",\n  \"age\": 22,\n  \"governorate\": \"القاهرة\"\n}"
             },
             "url": "{{base_url}}/auth/register"
-          }
+          },
+          "response": [
+            {
+              "name": "201 — Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم إنشاء الحساب بنجاح\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": {\n      \"id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"name\": \"Ahmed\",\n      \"phone\": \"01012345678\",\n      \"role\": \"player\",\n      \"governorate\": \"القاهرة\",\n      \"age\": 22,\n      \"field_name\": null\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "400 — Phone already used",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"رقم الهاتف مستخدم بالفعل\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
-          "name": "Register Owner",
+          "name": "Register — Owner",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Ahmed\",\n  \"phone\": \"01098765432\",\n  \"password\": \"123456\",\n  \"role\": \"owner\",\n  \"field_name\": \"ملعب الهدف\",\n  \"governorate\": \"القاهرة\"\n}"
+              "raw": "{\n  \"name\": \"Mohamed\",\n  \"phone\": \"01098765432\",\n  \"password\": \"123456\",\n  \"role\": \"owner\",\n  \"field_name\": \"ملعب الهدف\",\n  \"governorate\": \"الجيزة\"\n}"
             },
             "url": "{{base_url}}/auth/register"
-          }
+          },
+          "response": [
+            {
+              "name": "201 — Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم إنشاء الحساب بنجاح\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": {\n      \"id\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n      \"name\": \"Mohamed\",\n      \"phone\": \"01098765432\",\n      \"role\": \"owner\",\n      \"governorate\": \"الجيزة\",\n      \"age\": null,\n      \"field_name\": \"ملعب الهدف\"\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Login",
           "event": [
@@ -54,6 +86,7 @@
                   "const res = pm.response.json();",
                   "if (res.data && res.data.token) {",
                   "  pm.collectionVariables.set('token', res.data.token);",
+                  "  console.log('✅ Token saved');",
                   "}"
                 ]
               }
@@ -67,21 +100,52 @@
               "raw": "{\n  \"phone\": \"01012345678\",\n  \"password\": \"123456\"\n}"
             },
             "url": "{{base_url}}/auth/login"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم تسجيل الدخول بنجاح\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": {\n      \"id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"name\": \"Ahmed\",\n      \"phone\": \"01012345678\",\n      \"role\": \"player\",\n      \"governorate\": \"القاهرة\",\n      \"age\": 22,\n      \"field_name\": null,\n      \"matches_played\": 5,\n      \"splits_joined\": 3,\n      \"match_notifications\": true,\n      \"wallet_balance\": 250\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "401 — Wrong credentials",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"رقم الهاتف أو كلمة المرور غير صحيحة\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "👤 User",
       "item": [
+
         {
           "name": "Get Profile",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/user/profile"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"name\": \"Ahmed\",\n      \"phone\": \"01012345678\",\n      \"role\": \"player\",\n      \"avatar\": null,\n      \"governorate\": \"القاهرة\",\n      \"age\": 22,\n      \"matches_played\": 5,\n      \"splits_joined\": 3,\n      \"match_notifications\": true,\n      \"wallet_balance\": 250,\n      \"favorite_fields\": [\n        {\n          \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n          \"name\": \"ملعب الكابيتانو\",\n          \"location\": { \"name\": \"مدينة نصر\", \"address\": \"القاهرة - النزهة\" },\n          \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n          \"rating_avg\": 4.5\n        }\n      ]\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Update Profile",
           "request": {
@@ -92,14 +156,26 @@
               "raw": "{\n  \"name\": \"Ahmed Updated\",\n  \"age\": 25,\n  \"governorate\": \"الإسكندرية\",\n  \"match_notifications\": true\n}"
             },
             "url": "{{base_url}}/user/profile"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم تحديث الملف الشخصي\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"name\": \"Ahmed Updated\",\n      \"phone\": \"01012345678\",\n      \"role\": \"player\",\n      \"governorate\": \"الإسكندرية\",\n      \"age\": 25,\n      \"match_notifications\": true,\n      \"wallet_balance\": 250\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "🏟️ Fields",
       "item": [
+
         {
           "name": "Get All Fields",
           "request": {
@@ -109,22 +185,55 @@
               "host": ["{{base_url}}"],
               "path": ["fields"],
               "query": [
-                { "key": "location", "value": "مدينة نصر", "disabled": true },
-                { "key": "type", "value": "5x5", "disabled": true },
-                { "key": "min_price", "value": "200", "disabled": true },
-                { "key": "max_price", "value": "500", "disabled": true },
-                { "key": "search", "value": "ملعب", "disabled": true }
+                { "key": "q",         "value": "ملعب النزهة", "disabled": true, "description": "unified search — name / location.name / location.address" },
+                { "key": "type",      "value": "5x5",          "disabled": true, "description": "5x5 | 7x7 | 11x11" },
+                { "key": "min_price", "value": "200",          "disabled": true },
+                { "key": "max_price", "value": "500",          "disabled": true },
+                { "key": "min_rating","value": "4",            "disabled": true },
+                { "key": "sort",      "value": "price_asc",    "disabled": true, "description": "price_asc | price_desc | rating" },
+                { "key": "page",      "value": "1",            "disabled": true },
+                { "key": "limit",     "value": "10",           "disabled": true }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"count\": 2,\n    \"fields\": [\n      {\n        \"id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"ownerId\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"type\": { \"id\": \"5x5\", \"label\": \"خماسي\" },\n        \"pricePerHour\": 300,\n        \"rating\": 4.5,\n        \"reviewsCount\": 12,\n        \"location\": {\n          \"name\": \"مدينة نصر\",\n          \"address\": \"القاهرة - النزهة\",\n          \"lat\": 30.0626,\n          \"lng\": 31.3219\n        },\n        \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n        \"features\": [\n          { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n          { \"id\": \"2\", \"name\": \"كافيتريا\" }\n        ],\n        \"workingHours\": {\n          \"is24Hours\": false,\n          \"openTime\": \"09:00\",\n          \"closeTime\": \"23:00\"\n        },\n        \"status\": \"active\"\n      }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Get Field By ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/fields/{{field_id}}"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n    \"ownerId\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n    \"name\": \"ملعب الكابيتانو\",\n    \"type\": { \"id\": \"5x5\", \"label\": \"خماسي\" },\n    \"pricePerHour\": 300,\n    \"rating\": 4.5,\n    \"reviewsCount\": 12,\n    \"location\": {\n      \"name\": \"مدينة نصر\",\n      \"address\": \"القاهرة - النزهة\",\n      \"lat\": 30.0626,\n      \"lng\": 31.3219\n    },\n    \"images\": [\n      \"https://res.cloudinary.com/demo/image/upload/field1.jpg\",\n      \"https://res.cloudinary.com/demo/image/upload/field2.jpg\"\n    ],\n    \"features\": [\n      { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n      { \"id\": \"2\", \"name\": \"كافيتريا\" },\n      { \"id\": \"3\", \"name\": \"غرف تبديل\" }\n    ],\n    \"workingHours\": {\n      \"is24Hours\": false,\n      \"openTime\": \"09:00\",\n      \"closeTime\": \"23:00\"\n    },\n    \"status\": \"active\"\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "404 — Not found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"الملعب غير موجود\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Create Field",
           "event": [
@@ -135,6 +244,7 @@
                   "const res = pm.response.json();",
                   "if (res.data && res.data.field && res.data.field._id) {",
                   "  pm.collectionVariables.set('field_id', res.data.field._id);",
+                  "  console.log('✅ field_id saved:', res.data.field._id);",
                   "}"
                 ]
               }
@@ -148,8 +258,19 @@
               "raw": "{\n  \"name\": \"ملعب الكابيتانو\",\n  \"location\": {\n    \"name\": \"مدينة نصر\",\n    \"address\": \"القاهرة - النزهة\",\n    \"lat\": 30.0626,\n    \"lng\": 31.3219\n  },\n  \"price_per_hour\": 300,\n  \"type\": \"5x5\",\n  \"open_time\": \"09:00\",\n  \"close_time\": \"23:00\",\n  \"is24Hours\": false,\n  \"features\": [\n    { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n    { \"id\": \"2\", \"name\": \"كافيتريا\" },\n    { \"id\": \"3\", \"name\": \"غرف تبديل\" }\n  ]\n}"
             },
             "url": "{{base_url}}/fields"
-          }
+          },
+          "response": [
+            {
+              "name": "201 — Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم إنشاء الملعب بنجاح\",\n  \"data\": {\n    \"field\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n      \"owner\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n      \"name\": \"ملعب الكابيتانو\",\n      \"location\": {\n        \"name\": \"مدينة نصر\",\n        \"address\": \"القاهرة - النزهة\",\n        \"lat\": 30.0626,\n        \"lng\": 31.3219\n      },\n      \"price_per_hour\": 300,\n      \"type\": \"5x5\",\n      \"open_time\": \"09:00\",\n      \"close_time\": \"23:00\",\n      \"is24Hours\": false,\n      \"features\": [\n        { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n        { \"id\": \"2\", \"name\": \"كافيتريا\" },\n        { \"id\": \"3\", \"name\": \"غرف تبديل\" }\n      ],\n      \"images\": [],\n      \"status\": \"active\",\n      \"rating_avg\": 0,\n      \"rating_count\": 0,\n      \"createdAt\": \"2026-05-05T10:00:00.000Z\"\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Update Field",
           "request": {
@@ -160,8 +281,19 @@
               "raw": "{\n  \"price_per_hour\": 400,\n  \"status\": \"active\"\n}"
             },
             "url": "{{base_url}}/fields/{{field_id}}"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم تحديث الملعب بنجاح\",\n  \"data\": {\n    \"field\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n      \"name\": \"ملعب الكابيتانو\",\n      \"price_per_hour\": 400,\n      \"status\": \"active\"\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Upload Field Images",
           "request": {
@@ -170,34 +302,53 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "images",
-                  "type": "file",
-                  "src": []
-                }
+                { "key": "images", "type": "file", "src": [] }
               ]
             },
             "url": "{{base_url}}/fields/{{field_id}}/images"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم رفع الصور بنجاح\",\n  \"data\": {\n    \"images\": [\n      \"https://res.cloudinary.com/demo/image/upload/yalla-kora/fields/img1.jpg\",\n      \"https://res.cloudinary.com/demo/image/upload/yalla-kora/fields/img2.jpg\"\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "📅 Schedule & Availability",
       "item": [
+
         {
           "name": "Get Schedule",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/fields/{{field_id}}/schedule?date=2026-02-03",
+              "raw": "{{base_url}}/fields/{{field_id}}/schedule?date=2026-06-01",
               "host": ["{{base_url}}"],
               "path": ["fields", "{{field_id}}", "schedule"],
-              "query": [{ "key": "date", "value": "2026-02-03" }]
+              "query": [{ "key": "date", "value": "2026-06-01" }]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"date\": \"2026-06-01\",\n    \"slots\": [\n      { \"time\": \"09:00\", \"status\": \"available\" },\n      { \"time\": \"10:00\", \"status\": \"available\" },\n      { \"time\": \"11:00\", \"status\": \"available\" },\n      { \"time\": \"12:00\", \"status\": \"available\" },\n      { \"time\": \"13:00\", \"status\": \"available\" },\n      { \"time\": \"14:00\", \"status\": \"available\" },\n      { \"time\": \"15:00\", \"status\": \"available\" },\n      { \"time\": \"16:00\", \"status\": \"available\" },\n      { \"time\": \"17:00\", \"status\": \"booked\" },\n      { \"time\": \"18:00\", \"status\": \"booked\" },\n      { \"time\": \"19:00\", \"status\": \"available\" },\n      { \"time\": \"20:00\", \"status\": \"available\" },\n      { \"time\": \"21:00\", \"status\": \"available\" },\n      { \"time\": \"22:00\", \"status\": \"available\" }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Set Schedule (Owner)",
           "request": {
@@ -205,31 +356,54 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2026-02-03\",\n  \"slots\": [\n    { \"time\": \"09:00\", \"status\": \"available\" },\n    { \"time\": \"10:00\", \"status\": \"available\" },\n    { \"time\": \"17:00\", \"status\": \"booked\" },\n    { \"time\": \"18:00\", \"status\": \"available\" }\n  ]\n}"
+              "raw": "{\n  \"date\": \"2026-06-01\",\n  \"slots\": [\n    { \"time\": \"09:00\", \"status\": \"available\" },\n    { \"time\": \"10:00\", \"status\": \"available\" },\n    { \"time\": \"17:00\", \"status\": \"available\" },\n    { \"time\": \"18:00\", \"status\": \"available\" }\n  ]\n}"
             },
             "url": "{{base_url}}/fields/{{field_id}}/schedule"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم تحديث الجدول بنجاح\",\n  \"data\": {\n    \"schedule\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c10\",\n      \"field\": \"664f1a2b3c4d5e6f7a8b9c01\",\n      \"date\": \"2026-06-01\",\n      \"slots\": [\n        { \"time\": \"09:00\", \"status\": \"available\" },\n        { \"time\": \"10:00\", \"status\": \"available\" },\n        { \"time\": \"17:00\", \"status\": \"available\" },\n        { \"time\": \"18:00\", \"status\": \"available\" }\n      ]\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Get Month Availability",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/fields/{{field_id}}/availability?month=2026-02",
+              "raw": "{{base_url}}/fields/{{field_id}}/availability?month=2026-06",
               "host": ["{{base_url}}"],
               "path": ["fields", "{{field_id}}", "availability"],
-              "query": [{ "key": "month", "value": "2026-02" }]
+              "query": [{ "key": "month", "value": "2026-06" }]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"fieldId\": \"664f1a2b3c4d5e6f7a8b9c01\",\n    \"month\": \"2026-06\",\n    \"timezone\": \"Africa/Cairo\",\n    \"slotDuration\": 60,\n    \"currency\": \"EGP\",\n    \"days\": [\n      {\n        \"dayDate\": \"2026-06-01\",\n        \"dayName\": \"الاثنين\",\n        \"slots\": [\n          { \"id\": \"2026-06-01-s1\", \"startTime\": \"09:00\", \"endTime\": \"10:00\", \"isAvailable\": true,  \"price\": 300 },\n          { \"id\": \"2026-06-01-s2\", \"startTime\": \"10:00\", \"endTime\": \"11:00\", \"isAvailable\": true,  \"price\": 300 },\n          { \"id\": \"2026-06-01-s9\", \"startTime\": \"17:00\", \"endTime\": \"18:00\", \"isAvailable\": false, \"price\": 300 }\n        ]\n      }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "📖 Bookings",
       "item": [
+
         {
-          "name": "Create Booking",
+          "name": "Create Booking — Cash",
           "event": [
             {
               "listen": "test",
@@ -238,6 +412,7 @@
                   "const res = pm.response.json();",
                   "if (res.data && res.data.booking && res.data.booking._id) {",
                   "  pm.collectionVariables.set('booking_id', res.data.booking._id);",
+                  "  console.log('✅ booking_id saved:', res.data.booking._id);",
                   "}"
                 ]
               }
@@ -248,11 +423,53 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-12-03\",\n  \"time_from\": \"17:00\",\n  \"time_to\": \"18:00\",\n  \"players_count\": 10,\n  \"type\": \"5x5\",\n  \"payment_method\": \"cash\"\n}"
+              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-06-01\",\n  \"time_from\": \"19:00\",\n  \"time_to\": \"20:00\",\n  \"players_count\": 10,\n  \"type\": \"5x5\",\n  \"payment_method\": \"cash\"\n}"
             },
             "url": "{{base_url}}/bookings"
-          }
+          },
+          "response": [
+            {
+              "name": "201 — Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم تأكيد الحجز بنجاح\",\n  \"data\": {\n    \"booking\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c20\",\n      \"booking_code\": \"BO-2547\",\n      \"player\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"field\": {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"location\": { \"name\": \"مدينة نصر\", \"address\": \"القاهرة - النزهة\" }\n      },\n      \"date\": \"2026-06-01\",\n      \"time_from\": \"19:00\",\n      \"time_to\": \"20:00\",\n      \"players_count\": 10,\n      \"type\": \"5x5\",\n      \"payment_method\": \"cash\",\n      \"status\": \"confirmed\",\n      \"total_price\": 310,\n      \"service_fee\": 10,\n      \"createdAt\": \"2026-05-05T10:00:00.000Z\"\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "409 — Slot already booked",
+              "status": "Conflict",
+              "code": 409,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"الوقت 19:00 محجوز بالفعل\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
+        {
+          "name": "Create Booking — Wallet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-06-02\",\n  \"time_from\": \"20:00\",\n  \"time_to\": \"21:00\",\n  \"players_count\": 10,\n  \"type\": \"5x5\",\n  \"payment_method\": \"wallet\"\n}"
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": [
+            {
+              "name": "400 — Insufficient wallet balance",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"رصيد المحفظة غير كافٍ\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
+        },
+
         {
           "name": "Get Upcoming Bookings",
           "request": {
@@ -263,8 +480,19 @@
               "path": ["bookings"],
               "query": [{ "key": "type", "value": "upcoming" }]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"count\": 1,\n    \"bookings\": [\n      {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c20\",\n        \"booking_code\": \"BO-2547\",\n        \"field\": {\n          \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n          \"name\": \"ملعب الكابيتانو\",\n          \"location\": { \"name\": \"مدينة نصر\", \"address\": \"القاهرة - النزهة\" },\n          \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n          \"type\": \"5x5\"\n        },\n        \"date\": \"2026-06-01\",\n        \"time_from\": \"19:00\",\n        \"time_to\": \"20:00\",\n        \"status\": \"confirmed\",\n        \"total_price\": 310,\n        \"payment_method\": \"cash\"\n      }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Get Past Bookings",
           "request": {
@@ -275,35 +503,88 @@
               "path": ["bookings"],
               "query": [{ "key": "type", "value": "past" }]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"count\": 1,\n    \"bookings\": [\n      {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c21\",\n        \"booking_code\": \"BO-1234\",\n        \"date\": \"2025-12-01\",\n        \"time_from\": \"17:00\",\n        \"time_to\": \"18:00\",\n        \"status\": \"completed\",\n        \"total_price\": 310,\n        \"payment_method\": \"cash\"\n      }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Booking Details",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/bookings/{{booking_id}}"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"booking\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c20\",\n      \"booking_code\": \"BO-2547\",\n      \"field\": {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"location\": { \"name\": \"مدينة نصر\", \"address\": \"القاهرة - النزهة\" },\n        \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n        \"price_per_hour\": 300\n      },\n      \"date\": \"2026-06-01\",\n      \"time_from\": \"19:00\",\n      \"time_to\": \"20:00\",\n      \"players_count\": 10,\n      \"type\": \"5x5\",\n      \"payment_method\": \"cash\",\n      \"status\": \"confirmed\",\n      \"total_price\": 310,\n      \"service_fee\": 10\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Cancel Booking",
           "request": {
             "method": "DELETE",
             "url": "{{base_url}}/bookings/{{booking_id}}"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم إلغاء الحجز بنجاح\",\n  \"data\": {}\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "400 — Already cancelled",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"الحجز ملغي بالفعل\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "💰 Wallet",
       "item": [
+
         {
           "name": "Get Balance",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/wallet"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"balance\": 250\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Charge Wallet",
           "request": {
@@ -314,26 +595,26 @@
               "raw": "{\n  \"amount\": 500,\n  \"method\": \"vodafone_cash\"\n}"
             },
             "url": "{{base_url}}/wallet/charge"
-          }
-        },
-        {
-          "name": "Create Booking (Wallet Payment)",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-12-04\",\n  \"time_from\": \"19:00\",\n  \"time_to\": \"20:00\",\n  \"players_count\": 10,\n  \"type\": \"5x5\",\n  \"payment_method\": \"wallet\"\n}"
-            },
-            "url": "{{base_url}}/bookings"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم شحن المحفظة بنجاح\",\n  \"data\": {\n    \"balance\": 750,\n    \"charged\": 500,\n    \"method\": \"vodafone_cash\"\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "👥 Matches",
       "item": [
+
         {
           "name": "Get All Matches",
           "request": {
@@ -343,19 +624,41 @@
               "host": ["{{base_url}}"],
               "path": ["matches"],
               "query": [
-                { "key": "date", "value": "2026-12-03", "disabled": true },
+                { "key": "date",     "value": "2026-06-01",   "disabled": true },
                 { "key": "field_id", "value": "{{field_id}}", "disabled": true }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"count\": 1,\n    \"matches\": [\n      {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c30\",\n        \"creator\": { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed\", \"avatar\": null },\n        \"field\": {\n          \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n          \"name\": \"ملعب الكابيتانو\",\n          \"location\": { \"name\": \"مدينة نصر\" },\n          \"type\": \"5x5\"\n        },\n        \"date\": \"2026-06-01\",\n        \"time\": \"21:00\",\n        \"players_needed\": 10,\n        \"price_per_player\": 30,\n        \"players\": [\"664f1a2b3c4d5e6f7a8b9c0d\"],\n        \"status\": \"open\",\n        \"spots_left\": 9\n      }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Match Details",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/matches/{{match_id}}"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"match\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c30\",\n      \"creator\": { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed\", \"avatar\": null },\n      \"field\": {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"location\": { \"name\": \"مدينة نصر\" },\n        \"price_per_hour\": 300\n      },\n      \"date\": \"2026-06-01\",\n      \"time\": \"21:00\",\n      \"players_needed\": 10,\n      \"price_per_player\": 30,\n      \"players\": [\n        { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed\", \"avatar\": null }\n      ],\n      \"status\": \"open\",\n      \"spots_left\": 9\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Create Match",
           "event": [
@@ -366,6 +669,7 @@
                   "const res = pm.response.json();",
                   "if (res.data && res.data.match && res.data.match._id) {",
                   "  pm.collectionVariables.set('match_id', res.data.match._id);",
+                  "  console.log('✅ match_id saved:', res.data.match._id);",
                   "}"
                 ]
               }
@@ -376,31 +680,81 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-12-03\",\n  \"time\": \"21:00\",\n  \"players_needed\": 10,\n  \"price_per_player\": 30\n}"
+              "raw": "{\n  \"field_id\": \"{{field_id}}\",\n  \"date\": \"2026-06-01\",\n  \"time\": \"21:00\",\n  \"players_needed\": 10,\n  \"price_per_player\": 30\n}"
             },
             "url": "{{base_url}}/matches"
-          }
+          },
+          "response": [
+            {
+              "name": "201 — Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم إنشاء التقسيمة بنجاح\",\n  \"data\": {\n    \"match\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c30\",\n      \"creator\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"field\": {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"location\": { \"name\": \"مدينة نصر\" }\n      },\n      \"date\": \"2026-06-01\",\n      \"time\": \"21:00\",\n      \"players_needed\": 10,\n      \"price_per_player\": 30,\n      \"players\": [\"664f1a2b3c4d5e6f7a8b9c0d\"],\n      \"status\": \"open\",\n      \"spots_left\": 9\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Join Match",
           "request": {
             "method": "POST",
             "url": "{{base_url}}/matches/{{match_id}}/join"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم الانضمام للتقسيمة بنجاح\",\n  \"data\": {\n    \"match\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c30\",\n      \"players_needed\": 10,\n      \"status\": \"open\",\n      \"spots_left\": 8\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "400 — Already joined",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"انت منضم بالفعل لهذه التقسيمة\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Leave Match",
           "request": {
             "method": "POST",
             "url": "{{base_url}}/matches/{{match_id}}/leave"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم مغادرة التقسيمة\",\n  \"data\": {\n    \"match\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c30\",\n      \"status\": \"open\",\n      \"spots_left\": 9\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "400 — Creator can't leave",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"منشئ التقسيمة لا يمكنه مغادرتها\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "⭐ Ratings",
       "item": [
+
         {
           "name": "Rate Field",
           "request": {
@@ -408,17 +762,37 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"ملعب ممتاز ونظيف\"\n}"
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"ملعب ممتاز ونظيف جداً\"\n}"
             },
             "url": "{{base_url}}/fields/{{field_id}}/rate"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم إرسال التقييم بنجاح\",\n  \"data\": {\n    \"rating\": {\n      \"_id\": \"664f1a2b3c4d5e6f7a8b9c40\",\n      \"player\": \"664f1a2b3c4d5e6f7a8b9c0d\",\n      \"field\": \"664f1a2b3c4d5e6f7a8b9c01\",\n      \"rating\": 5,\n      \"comment\": \"ملعب ممتاز ونظيف جداً\",\n      \"createdAt\": \"2026-05-05T10:00:00.000Z\"\n    }\n  }\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "403 — No booking found",
+              "status": "Forbidden",
+              "code": 403,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"يجب أن تحجز الملعب أولاً قبل التقييم\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
     {
       "name": "📊 Owner Dashboard",
       "item": [
+
         {
           "name": "Get Field Bookings",
           "request": {
@@ -428,24 +802,46 @@
               "host": ["{{base_url}}"],
               "path": ["owner", "fields", "{{field_id}}", "bookings"],
               "query": [
-                { "key": "date", "value": "2026-02-03", "disabled": true },
-                { "key": "status", "value": "confirmed", "disabled": true }
+                { "key": "date",   "value": "2026-06-01",  "disabled": true },
+                { "key": "status", "value": "confirmed",   "disabled": true }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"count\": 2,\n    \"bookings\": [\n      {\n        \"_id\": \"664f1a2b3c4d5e6f7a8b9c20\",\n        \"booking_code\": \"BO-2547\",\n        \"player\": { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed\", \"phone\": \"01012345678\", \"avatar\": null },\n        \"date\": \"2026-06-01\",\n        \"time_from\": \"17:00\",\n        \"time_to\": \"18:00\",\n        \"total_price\": 310,\n        \"status\": \"confirmed\",\n        \"payment_method\": \"cash\"\n      }\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         },
+
         {
           "name": "Daily Dashboard",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{base_url}}/owner/fields/{{field_id}}/dashboard?date=2026-02-03",
+              "raw": "{{base_url}}/owner/fields/{{field_id}}/dashboard?date=2026-06-01",
               "host": ["{{base_url}}"],
               "path": ["owner", "fields", "{{field_id}}", "dashboard"],
-              "query": [{ "key": "date", "value": "2026-02-03" }]
+              "query": [{ "key": "date", "value": "2026-06-01" }]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"date\": \"2026-06-01\",\n    \"field\": { \"id\": \"664f1a2b3c4d5e6f7a8b9c01\", \"name\": \"ملعب الكابيتانو\" },\n    \"summary\": {\n      \"total_slots\": 14,\n      \"booked_slots\": 2,\n      \"available_slots\": 12,\n      \"revenue_today\": 620\n    },\n    \"slots\": [\n      { \"time\": \"09:00\", \"status\": \"available\", \"booking\": null },\n      { \"time\": \"17:00\", \"status\": \"booked\", \"booking\": {\n          \"id\": \"664f1a2b3c4d5e6f7a8b9c20\",\n          \"booking_code\": \"BO-2547\",\n          \"player\": { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed\", \"phone\": \"01012345678\" },\n          \"time_from\": \"17:00\",\n          \"time_to\": \"18:00\",\n          \"total_price\": 310\n      }},\n      { \"time\": \"18:00\", \"status\": \"booked\", \"booking\": {\n          \"id\": \"664f1a2b3c4d5e6f7a8b9c20\",\n          \"booking_code\": \"BO-2547\",\n          \"player\": { \"_id\": \"664f1a2b3c4d5e6f7a8b9c0d\", \"name\": \"Ahmed\", \"phone\": \"01012345678\" },\n          \"time_from\": \"17:00\",\n          \"time_to\": \"19:00\",\n          \"total_price\": 620\n      }}\n    ]\n  }\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
+
       ]
     },
 
@@ -457,9 +853,20 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/health"
-          }
+          },
+          "response": [
+            {
+              "name": "200 — OK",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": \"ok\",\n  \"app\": \"Yalla Kora API ⚽\",\n  \"timestamp\": \"2026-05-05T10:00:00.000Z\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
         }
       ]
     }
+
   ]
 }
