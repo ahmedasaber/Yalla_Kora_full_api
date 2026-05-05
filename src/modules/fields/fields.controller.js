@@ -51,7 +51,7 @@ const getAllFields = async (req, res, next) => {
 const getFieldDetails = async (req, res, next) => {
   try {
     const field = await fieldsService.getFieldDetails(req.params.field_id);
-    return success(res, { field });
+    return success(res, field);
   } catch (err) {
     next(err);
   }
