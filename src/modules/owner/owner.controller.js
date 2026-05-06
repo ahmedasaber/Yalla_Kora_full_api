@@ -3,12 +3,19 @@ const { success } = require('../../utils/response');
 
 const getFieldBookings = async (req, res, next) => {
   try {
-    const bookings = await ownerService.getFieldBookings(
+    const result = await ownerService.getFieldBookings(
       req.params.field_id,
       req.user._id,
       req.query
     );
-    return success(res, { count: bookings.length, bookings });
+    return success(res, result);
+
+    // const bookings = await ownerService.getFieldBookings(
+    //   req.params.field_id,
+    //   req.user._id,
+    //   req.query
+    // );
+    // return success(res, { count: bookings.length, bookings });
   } catch (err) {
     next(err);
   }

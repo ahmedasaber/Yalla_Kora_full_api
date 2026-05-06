@@ -13,8 +13,16 @@ const createBooking = async (req, res, next) => {
 const getMyBookings = async (req, res, next) => {
   try {
     const { type } = req.query; // upcoming | past
-    const bookings = await bookingsService.getMyBookings(req.user._id, type);
-    return success(res, { count: bookings.length, bookings });
+    // pagination response
+    const result = await bookingsService.getMyBookings(
+      req.user._id, 
+      type, 
+      req.query
+    );
+    return success(res, result);
+
+    // const bookings = await bookingsService.getMyBookings(req.user._id, type);
+    // return success(res, { count: bookings.length, bookings });
   } catch (err) {
     next(err);
   }

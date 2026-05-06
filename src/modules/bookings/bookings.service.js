@@ -88,11 +88,29 @@ const getMyBookings = async (playerId, type) => {
     filter.$or = [{ date: { $lt: today } }, { status: 'cancelled' }];
   }
 
-  const bookings = await Booking.find(filter)
-    .populate('field', 'name location images type')
-    .sort('-date');
+  // Pagination
+  const page  = parseInt(query.page)  || 1;
+  const limit = parseInt(query.limit) || 10;
+  const skip  = (page - 1) * limit;
 
-  return bookings;
+  const [bookings, total] = await Promise.all([
+    Booking.find(filter)
+      .populate('field', 'name location images type')
+      .sort('-date')
+      .skip(skip)
+      .limit(limit),
+    Booking.countDocuments(filter),
+  ]);
+
+  return {
+    bookings,
+    pagination: {
+      total,
+      page,
+      limit,
+      pages: Math.ceil(total / limit),
+    },
+  };
 };
 
 const getBookingDetails = async (bookingId, playerId) => {

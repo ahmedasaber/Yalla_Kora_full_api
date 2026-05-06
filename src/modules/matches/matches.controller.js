@@ -12,8 +12,11 @@ const createMatch = async (req, res, next) => {
 
 const getMatches = async (req, res, next) => {
   try {
-    const matches = await matchesService.getMatches(req.query);
-    return success(res, { count: matches.length, matches });
+    const result = await matchesService.getMatches(req.query);
+    return success(res, result);
+    
+    // const matches = await matchesService.getMatches(req.query);
+    // return success(res, { count: matches.length, matches });
   } catch (err) {
     next(err);
   }

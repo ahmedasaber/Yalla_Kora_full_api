@@ -26,12 +26,30 @@ const getMatches = async (query) => {
   if (query.date) filter.date = query.date;
   if (query.field_id) filter.field = query.field_id;
 
-  const matches = await Match.find(filter)
-    .populate('field', 'name location images type')
-    .populate('creator', 'name avatar')
-    .sort('date time');
+  // Pagination
+  const page  = parseInt(query.page)  || 1;
+  const limit = parseInt(query.limit) || 10;
+  const skip  = (page - 1) * limit;
 
-  return matches;
+  const [matches, total] = await Promise.all([
+    Match.find(filter)
+      .populate('field', 'name location images type')
+      .populate('creator', 'name avatar')
+      .sort('date time')
+      .skip(skip)
+      .limit(limit),
+    Match.countDocuments(filter),
+  ]);
+
+  return {
+    matches,
+    pagination: {
+      total,
+      page,
+      limit,
+      pages: Math.ceil(total / limit),
+    },
+  };
 };
 
 const getMatchDetails = async (matchId) => {
