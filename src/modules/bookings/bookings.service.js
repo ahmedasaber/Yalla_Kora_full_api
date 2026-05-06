@@ -77,7 +77,7 @@ const createBooking = async (playerId, body) => {
   return booking.populate('field', 'name location');
 };
 
-const getMyBookings = async (playerId, type) => {
+const getMyBookings = async (playerId, type, query = {}) => {
   const today = new Date().toISOString().split('T')[0];
   let filter = { player: playerId };
 
