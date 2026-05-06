@@ -8,7 +8,7 @@
   "variable": [
     { "key": "base_url",   "value": "https://yallakora.up.railway.app/api" },
     { "key": "token",      "value": "" },
-    { "key": "field_id",   "value": "" },
+    { "key": "field_id",   "value": "69f9c5d8ba84f8eef2824da7" },
     { "key": "booking_id", "value": "" },
     { "key": "match_id",   "value": "" }
   ],
@@ -202,7 +202,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"count\": 2,\n    \"fields\": [\n      {\n        \"id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"ownerId\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"type\": { \"id\": \"5x5\", \"label\": \"خماسي\" },\n        \"pricePerHour\": 300,\n        \"rating\": 4.5,\n        \"reviewsCount\": 12,\n        \"location\": {\n          \"name\": \"مدينة نصر\",\n          \"address\": \"القاهرة - النزهة\",\n          \"lat\": 30.0626,\n          \"lng\": 31.3219\n        },\n        \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n        \"features\": [\n          { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n          { \"id\": \"2\", \"name\": \"كافيتريا\" }\n        ],\n        \"workingHours\": {\n          \"is24Hours\": false,\n          \"openTime\": \"09:00\",\n          \"closeTime\": \"23:00\"\n        },\n        \"status\": \"active\"\n      }\n    ]\n  }\n}",
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"fields\": [\n      {\n        \"id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"ownerId\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"type\": { \"id\": \"5x5\", \"label\": \"خماسي\" },\n        \"pricePerHour\": 300,\n        \"rating\": 4.5,\n        \"reviewsCount\": 12,\n        \"location\": {\n          \"name\": \"مدينة نصر\",\n          \"address\": \"القاهرة - النزهة\",\n          \"lat\": 30.0626,\n          \"lng\": 31.3219\n        },\n        \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n        \"features\": [\n          { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n          { \"id\": \"2\", \"name\": \"كافيتريا\" }\n        ],\n        \"workingHours\": {\n          \"is24Hours\": false,\n          \"openTime\": \"09:00\",\n          \"closeTime\": \"23:00\"\n        },\n        \"status\": \"active\"\n      }\n    ],\n    \"pagination\": {\n      \"total\": 2,\n      \"page\": 1,\n      \"limit\": 10,\n      \"pages\": 1\n    }\n  }\n}",
               "_postman_previewlanguage": "json"
             }
           ]
@@ -313,7 +313,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"status\": \"success\",\n  \"message\": \"success\",\n  \"data\": {\n    \"fields\": [\n      {\n        \"id\": \"664f1a2b3c4d5e6f7a8b9c01\",\n        \"ownerId\": \"664f1a2b3c4d5e6f7a8b9c0e\",\n        \"name\": \"ملعب الكابيتانو\",\n        \"type\": { \"id\": \"5x5\", \"label\": \"خماسي\" },\n        \"pricePerHour\": 300,\n        \"rating\": 4.5,\n        \"reviewsCount\": 12,\n        \"location\": {\n          \"name\": \"مدينة نصر\",\n          \"address\": \"القاهرة - النزهة\",\n          \"lat\": 30.0626,\n          \"lng\": 31.3219\n        },\n        \"images\": [\"https://res.cloudinary.com/demo/image/upload/field1.jpg\"],\n        \"features\": [\n          { \"id\": \"1\", \"name\": \"نجيل صناعي\" },\n          { \"id\": \"2\", \"name\": \"كافيتريا\" }\n        ],\n        \"workingHours\": {\n          \"is24Hours\": false,\n          \"openTime\": \"09:00\",\n          \"closeTime\": \"23:00\"\n        },\n        \"status\": \"active\"\n      }\n    ],\n    \"pagination\": {\n      \"total\": 2,\n      \"page\": 1,\n      \"limit\": 10,\n      \"pages\": 1\n    }\n  }\n}",
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"تم رفع الصور بنجاح\",\n  \"data\": {\n    \"images\": [\n      \"https://res.cloudinary.com/demo/image/upload/yalla-kora/fields/img1.jpg\",\n      \"https://res.cloudinary.com/demo/image/upload/yalla-kora/fields/img2.jpg\"\n    ]\n  }\n}",
               "_postman_previewlanguage": "json"
             }
           ]
