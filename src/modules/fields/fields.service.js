@@ -84,7 +84,7 @@ const getAllFields = async (query) => {
     price_desc: { price_per_hour: -1 },
     rating:     { rating_avg:     -1 },
   };
-  const sortOption = sortMap[query.sort] || { createdAt: -1 };
+  const sortOption = sortMap[query.sort] || { createdAt: 1 };
 
   // Pagination
   const page  = parseInt(query.page)  || 1;
