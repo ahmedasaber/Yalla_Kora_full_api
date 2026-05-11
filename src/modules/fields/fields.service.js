@@ -27,6 +27,13 @@ const formatField = (field) => ({
 });
 
 const createField = async (ownerId, body) => {
+  if (body.location?.lat && body.location?.lng) {
+    body.location.coordinates = {
+      type: 'Point',
+      coordinates: [body.location.lng, body.location.lat],
+    };
+  }
+
   const field = await Field.create({ owner: ownerId, ...body });
   return field;
 };
@@ -66,9 +73,6 @@ const getAllFields = async (query) => {
     filter['location.name'] = { $regex: query.location, $options: 'i' };
   }
 
-  if (query.location) {
-    filter['location.name'] = { $regex: query.location, $options: 'i' };
-  }
   if (query.type) {
     filter.type = query.type;
   }
@@ -78,28 +82,53 @@ const getAllFields = async (query) => {
     if (query.max_price) filter.price_per_hour.$lte = Number(query.max_price);
   }
 
-  // Sorting
-  const sortMap = {
-    price_asc:  { price_per_hour:  1 },
-    price_desc: { price_per_hour: -1 },
-    rating:     { rating_avg:     -1 },
-  };
-  const sortOption = sortMap[query.sort] || { createdAt: 1 };
-
   // Pagination
   const page  = parseInt(query.page)  || 1;
   const limit = parseInt(query.limit) || 10;
   const skip  = (page - 1) * limit;
 
-  const [fields, total] = await Promise.all([
-    Field.find(filter)
-      .populate('owner', 'name phone')
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-    Field.countDocuments(filter),
-  ]);
+  let fields;
+  let total;
+
+  if (query.lat && query.lng) {
+    // لو بعت lat و lng → sort بالأقرب
+    const geoResults = await Field.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [parseFloat(query.lng), parseFloat(query.lat)],
+          },
+          distanceField: 'distance',
+          spherical: true,
+          query: filter,
+        },
+      },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    total = await Field.countDocuments(filter);
+    fields = geoResults;
+  } else {
+    // Sorting
+    const sortMap = {
+      price_asc:  { price_per_hour:  1 },
+      price_desc: { price_per_hour: -1 },
+      rating:     { rating_avg:     -1 },
+    };
+    const sortOption = sortMap[query.sort] || { createdAt: 1 };
+
+    [fields, total] = await Promise.all([
+      Field.find(filter)
+        .populate('owner', 'name phone')
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Field.countDocuments(filter),
+    ]);
+  }
 
   return {
     fields: fields.map(formatField),

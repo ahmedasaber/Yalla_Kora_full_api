@@ -11,6 +11,11 @@ const locationSchema = new mongoose.Schema(
     address: { type: String, required: true },    // "القاهرة - النزهة"
     lat: { type: Number },
     lng: { type: Number },
+    // 
+    coordinates: {
+      type: { type: String, enum: ['Point'], default: 'Point' },
+      coordinates: [Number],
+    },
   },
   { _id: false }
 );
@@ -34,6 +39,7 @@ const fieldSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+fieldSchema.index({ 'location.coordinates': '2dsphere' });
 // text index for search
 fieldSchema.index({ name: 'text', 'location.name': 'text' });
 
