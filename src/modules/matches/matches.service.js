@@ -35,6 +35,7 @@ const getMatches = async (query) => {
     Match.find(filter)
       .populate('field', 'name location images type')
       .populate('creator', 'name avatar')
+      .populate('players', 'name avatar _id')
       .sort('date time')
       .skip(skip)
       .limit(limit),
@@ -56,7 +57,7 @@ const getMatchDetails = async (matchId) => {
   const match = await Match.findById(matchId)
     .populate('field', 'name location images price_per_hour')
     .populate('creator', 'name avatar')
-    .populate('players', 'name avatar');
+    .populate('players', 'name avatar _id');
   if (!match) throw { statusCode: 404, message: 'التقسيمة غير موجودة' };
   return match;
 };
