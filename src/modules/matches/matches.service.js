@@ -85,7 +85,7 @@ const joinMatch = async (matchId, playerId) => {
   await match.populate([
     { path: 'players', select: 'name avatar _id' },
     { path: 'creator', select: 'name avatar _id' },
-    { path: 'field', select: 'name location' },
+    { path: 'field', select: 'name location type' },
   ]);
   
   const matchObj = match.toObject();
@@ -117,7 +117,7 @@ const leaveMatch = async (matchId, playerId) => {
   await match.populate([
     { path: 'players', select: 'name avatar _id' },
     { path: 'creator', select: 'name avatar _id' },
-    { path: 'field', select: 'name location' },
+    { path: 'field', select: 'name location type' },
   ]);
   
   const matchObj = match.toObject();
