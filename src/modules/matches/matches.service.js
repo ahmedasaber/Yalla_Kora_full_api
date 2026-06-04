@@ -88,7 +88,7 @@ const joinMatch = async (matchId, playerId) => {
     { path: 'field', select: 'name location type' },
   ]);
   
-  const matchObj = match.toObject();
+  const matchObj = match.toObject({ virtuals: true });
 
   matchObj.field.location = {
     name: matchObj.field.location.name,
@@ -120,7 +120,7 @@ const leaveMatch = async (matchId, playerId) => {
     { path: 'field', select: 'name location type' },
   ]);
   
-  const matchObj = match.toObject();
+  const matchObj = match.toObject({ virtuals: true });
 
   matchObj.field.location = {
     name: matchObj.field.location.name,
