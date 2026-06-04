@@ -64,19 +64,30 @@ const getMatchDetails = async (matchId) => {
 
 const joinMatch = async (matchId, playerId) => {
   const match = await Match.findById(matchId);
-  if (!match) throw { statusCode: 404, message: 'التقسيمة غير موجودة' };
-  if (match.status !== 'open') throw { statusCode: 400, message: 'التقسيمة مكتملة أو ملغية' };
 
-  const alreadyJoined = match.players.some((p) => p.toString() === playerId.toString());
-  if (alreadyJoined) throw { statusCode: 400, message: 'انت منضم بالفعل لهذه التقسيمة' };
-
+  if (!match) {
+    throw { statusCode: 404, message: 'التقسيمة غير موجودة' };
+  }
+  if (match.status !== 'open') {
+    throw { statusCode: 400, message: 'التقسيمة مكتملة أو ملغية' };
+  }
+  const alreadyJoined = match.players.some(
+    (p) => p.toString() === playerId.toString()
+  );
+  if (alreadyJoined) {
+    throw { statusCode: 400, message: 'انت منضم بالفعل لهذه التقسيمة' };
+  }
   match.players.push(playerId);
-
   if (match.players.length >= match.players_needed) {
     match.status = 'full';
   }
-
   await match.save();
+  await match.populate([
+    { path: 'players', select: 'name avatar _id' },
+    { path: 'creator', select: 'name avatar _id' },
+    { path: 'field', select: 'name location images' },
+  ]);
+  
   return match;
 };
 
@@ -96,6 +107,12 @@ const leaveMatch = async (matchId, playerId) => {
   if (match.status === 'full') match.status = 'open';
 
   await match.save();
+  await match.populate([
+    { path: 'players', select: 'name avatar _id' },
+    { path: 'creator', select: 'name avatar _id' },
+    { path: 'field', select: 'name location images' },
+  ]);
+  
   return match;
 };
 
