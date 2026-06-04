@@ -88,7 +88,14 @@ const joinMatch = async (matchId, playerId) => {
     { path: 'field', select: 'name location images' },
   ]);
   
-  return match;
+  const matchObj = match.toObject();
+
+  matchObj.field.location = {
+    name: matchObj.field.location.name,
+    address: matchObj.field.location.address,
+  };
+
+  return matchObj;
 };
 
 const leaveMatch = async (matchId, playerId) => {
@@ -113,7 +120,14 @@ const leaveMatch = async (matchId, playerId) => {
     { path: 'field', select: 'name location images' },
   ]);
   
-  return match;
+  const matchObj = match.toObject();
+
+  matchObj.field.location = {
+    name: matchObj.field.location.name,
+    address: matchObj.field.location.address,
+  };
+
+  return matchObj;
 };
 
 module.exports = { createMatch, getMatches, getMatchDetails, joinMatch, leaveMatch };
