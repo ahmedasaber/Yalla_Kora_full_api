@@ -1,23 +1,59 @@
 const Match = require('../../models/Match');
 const Field = require('../../models/Field');
 
+const CAPACITY_MAP = { '5x5': 10, '7x7': 14, '11x11': 22 };
+
+// helper عشان يرتب الـ location ويشيل الـ fields الزيادة
+const formatMatch = (match) => {
+  const obj = match.toObject({ virtuals: true });
+
+  // نظف الـ location
+  if (obj.field?.location) {
+    obj.field.location = {
+      name: obj.field.location.name,
+      address: obj.field.location.address,
+    };
+  }
+
+  return obj;
+};
+
 const createMatch = async (creatorId, body) => {
   const { field_id, date, time, players_needed, price_per_player } = body;
 
   const field = await Field.findById(field_id);
   if (!field) throw { statusCode: 404, message: 'الملعب غير موجود' };
 
+    if (!CAPACITY_MAP[field.type]) {
+      throw {
+        statusCode: 400,
+        message: 'نوع الملعب غير مدعوم'
+      };
+    }
+   // field_capacity من الـ type
+   const field_capacity = CAPACITY_MAP[field.type];
+
+     // validation إن players_needed متعداش الـ capacity
+  if (players_needed > field_capacity) {
+    throw { 
+      statusCode: 400, 
+      message: `ملعب ${field.type} بيستوعب ${field_capacity} لاعب بس` 
+    };
+  }
+
   const match = await Match.create({
     creator: creatorId,
     field: field_id,
     date,
     time,
+    field_capacity,
     players_needed,
     price_per_player,
     players: [creatorId], // creator joins automatically
   });
 
-  return match.populate('field', 'name location images');
+  await match.populate('field', 'name location images type');
+  return formatMatch(match);
 };
 
 const getMatches = async (query) => {
@@ -43,7 +79,7 @@ const getMatches = async (query) => {
   ]);
 
   return {
-    matches,
+    matches: matches.map(formatMatch),
     pagination: {
       total,
       page,
@@ -59,7 +95,7 @@ const getMatchDetails = async (matchId) => {
     .populate('creator', 'name avatar')
     .populate('players', 'name avatar _id');
   if (!match) throw { statusCode: 404, message: 'التقسيمة غير موجودة' };
-  return match;
+  return formatMatch(match);
 };
 
 const joinMatch = async (matchId, playerId) => {
@@ -77,6 +113,12 @@ const joinMatch = async (matchId, playerId) => {
   if (alreadyJoined) {
     throw { statusCode: 400, message: 'انت منضم بالفعل لهذه التقسيمة' };
   }
+  if (match.players.length >= match.players_needed) {
+    throw {
+      statusCode: 400,
+      message: 'التقسيمة مكتملة'
+    };
+  }
   match.players.push(playerId);
   if (match.players.length >= match.players_needed) {
     match.status = 'full';
@@ -88,14 +130,7 @@ const joinMatch = async (matchId, playerId) => {
     { path: 'field', select: 'name location type' },
   ]);
   
-  const matchObj = match.toObject({ virtuals: true });
-
-  matchObj.field.location = {
-    name: matchObj.field.location.name,
-    address: matchObj.field.location.address,
-  };
-
-  return matchObj;
+  return formatMatch(match);
 };
 
 const leaveMatch = async (matchId, playerId) => {
@@ -120,14 +155,7 @@ const leaveMatch = async (matchId, playerId) => {
     { path: 'field', select: 'name location type' },
   ]);
   
-  const matchObj = match.toObject({ virtuals: true });
-
-  matchObj.field.location = {
-    name: matchObj.field.location.name,
-    address: matchObj.field.location.address,
-  };
-
-  return matchObj;
+  return formatMatch(match);
 };
 
 module.exports = { createMatch, getMatches, getMatchDetails, joinMatch, leaveMatch };

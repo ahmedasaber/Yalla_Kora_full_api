@@ -14,6 +14,7 @@ const matchSchema = new mongoose.Schema(
     },
     date: { type: String, required: true },
     time: { type: String, required: true },
+    field_capacity: { type: Number, required: true },
     players_needed: { type: Number, required: true },
     price_per_player: { type: Number, required: true },
     players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -26,11 +27,16 @@ const matchSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+matchSchema.virtual('players_joined').get(function () {
+  return this.players.length;
+});
+
 // virtual: spots left
 matchSchema.virtual('spots_left').get(function () {
-  return this.players_needed - this.players.length;
+  return Math.max(0, this.players_needed - this.players.length);
 });
 
 matchSchema.set('toJSON', { virtuals: true });
+matchSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('Match', matchSchema);
